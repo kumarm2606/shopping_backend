@@ -54,7 +54,7 @@ const login = async (req, res) => {
 		if (err) throw err;
 		if(!result.length){
 			let msg = "Miss Matched User";
-			return res.status(400).json({
+			return res.status(200).json({
 			message: msg,
 			status: false,
 			});
@@ -63,13 +63,12 @@ const login = async (req, res) => {
 			let validPassword = await bcrypt.compare(password,pwd);
 			if(!validPassword){
 				let msg = "Miss Matched Password";
-				return res.status(400).json({
+				return res.status(200).json({
 				message: msg,
 				status: false,
 				});
 			}else{
 				const token = generateJwtToken({id : result[0].id, name:result[0].name, email: userName })
-				console.log(token,"++++++++++++++++++++++");
 				if(token){
 					
 				return res.status(200).json({
@@ -92,18 +91,18 @@ const login = async (req, res) => {
 
 const users = async (req, res) => {
   await conn.connect(async (err) => {
-	let sql = `SELECT * FROM login`;
+	let sql = `SELECT id,name,email,createdAt,updatedAt FROM login`;
 	await conn.query(sql, (err, result) => {
 	  if (err) throw err;
 	  if (!result.length) {
 		let msg = "Users not found";
-		return res.status(404).json({
+		return res.status(200).json({
 		  message: msg,
 		  status: "failed",
 		});
 	  } else {
 		return res.json({
-			WS : result,
+			data : result,
 		  message: "ok",
 		  status: "success",
 		});
